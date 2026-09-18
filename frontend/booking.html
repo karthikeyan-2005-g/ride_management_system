@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Car Booking - RentalCars</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-gray-50 text-gray-900">
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="bg-gray-950 text-white shadow-lg">
+
+    <div class="max-w-7xl mx-auto px-6">
+
+        <div class="flex items-center justify-between h-20">
+
+            <a href="../index.html"
+               class="text-2xl font-bold">
+
+                🚗 RentalCars
+
+            </a>
+
+
+            <div class="hidden md:flex items-center gap-8">
+
+                <a href="/index.html"
+                   class="hover:text-green-400">
+
+                    Home
+
+                </a>
+
+                <a href="cars.html"
+                   class="hover:text-green-400">
+
+                    Cars
+
+                </a>
+
+                <a href="my-bookings.html"
+                   class="hover:text-green-400">
+
+                    My Bookings
+
+                </a>
+
+                <a href="login.html"
+                   class="bg-green-500
+                          hover:bg-green-600
+                          px-5 py-2.5
+                          rounded-lg
+                          font-semibold">
+
+                    Login
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ================= PAGE HEADER ================= -->
+
+<section class="bg-gradient-to-r
+                from-blue-600
+                to-blue-800
+                text-white">
+
+    <div class="max-w-7xl mx-auto
+                px-6 py-12">
+
+        <h1 class="text-4xl
+                   md:text-5xl
+                   font-bold">
+
+            Book Your Car
+
+        </h1>
+
+        <p class="mt-3 text-blue-100">
+
+            Complete the form to book your car.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= BOOKING SECTION ================= -->
+
+<section class="max-w-6xl mx-auto
+                px-6 py-12">
+
+
+    <div class="grid lg:grid-cols-3 gap-8">
+
+
+        <!-- ================= CAR DETAILS ================= -->
+
+        <div class="bg-white
+                    rounded-2xl
+                    shadow-md
+                    p-6
+                    h-fit">
+
+            <h2 class="text-2xl
+                       font-bold
+                       mb-6">
+
+                Selected Car
+
+            </h2>
+
+
+            <!-- Car Image -->
+
+            <div class="h-48
+                        rounded-xl
+                        overflow-hidden
+                        mb-5">
+
+                <img
+                    id="carImage"
+                    src=""
+                    alt="Selected Car"
+                    class="w-full h-full object-cover">
+
+            </div>
+
+
+            <h3 id="carName"
+                class="text-2xl
+                       font-bold">
+
+                Toyota Camry
+
+            </h3>
+
+
+            <p id="carType"
+               class="text-gray-500 mt-1">
+
+                Sedan
+
+            </p>
+
+
+            <div class="border-t
+                        mt-5 pt-5">
+
+                <div class="flex
+                            justify-between
+                            mb-3">
+
+                    <span class="text-gray-500">
+                        Price per day
+                    </span>
+
+                    <span id="carPrice"
+                          class="font-bold
+                                 text-blue-600">
+
+                        ₹2,500
+
+                    </span>
+
+                </div>
+
+
+                <div class="flex
+                            justify-between">
+
+                    <span class="text-gray-500">
+                        Availability
+                    </span>
+
+                    <span class="text-green-600
+                                 font-semibold">
+
+                        Available
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= BOOKING FORM ================= -->
+
+        <div class="lg:col-span-2
+                    bg-white
+                    rounded-2xl
+                    shadow-md
+                    p-8">
+
+
+            <h2 class="text-2xl
+                       font-bold
+                       mb-6">
+
+                Booking Information
+
+            </h2>
+
+
+            <form id="bookingForm">
+
+
+                <!-- Customer Name -->
+
+                <div class="mb-5">
+
+                    <label class="block
+                                  font-semibold
+                                  mb-2">
+
+                        Customer Name
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customerName"
+                        placeholder="Enter your full name"
+                        required
+                        class="w-full
+                               border
+                               border-gray-300
+                               rounded-lg
+                               px-4 py-3
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500">
+
+                </div>
+
+
+
+                <!-- Email + Phone -->
+
+                <div class="grid md:grid-cols-2
+                            gap-5">
+
+
+                    <div>
+
+                        <label class="block
+                                      font-semibold
+                                      mb-2">
+
+                            Email
+
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            required
+                            class="w-full
+                                   border
+                                   border-gray-300
+                                   rounded-lg
+                                   px-4 py-3
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500">
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="block
+                                      font-semibold
+                                      mb-2">
+
+                            Phone Number
+
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            placeholder="Enter your phone number"
+                            required
+                            class="w-full
+                                   border
+                                   border-gray-300
+                                   rounded-lg
+                                   px-4 py-3
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500">
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Dates -->
+
+                <div class="grid md:grid-cols-2
+                            gap-5 mt-5">
+
+
+                    <div>
+
+                        <label class="block
+                                      font-semibold
+                                      mb-2">
+
+                            Pickup Date
+
+                        </label>
+
+                        <input
+                            type="date"
+                            id="pickupDate"
+                            required
+                            class="w-full
+                                   border
+                                   border-gray-300
+                                   rounded-lg
+                                   px-4 py-3
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500">
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="block
+                                      font-semibold
+                                      mb-2">
+
+                            Return Date
+
+                        </label>
+
+                        <input
+                            type="date"
+                            id="returnDate"
+                            required
+                            class="w-full
+                                   border
+                                   border-gray-300
+                                   rounded-lg
+                                   px-4 py-3
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500">
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Pickup Location -->
+
+                <div class="mt-5">
+
+                    <label class="block
+                                  font-semibold
+                                  mb-2">
+
+                        Pickup Location
+
+                    </label>
+
+                    <select
+                        id="pickupLocation"
+                        required
+                        class="w-full
+                               border
+                               border-gray-300
+                               rounded-lg
+                               px-4 py-3
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500">
+
+                        <option value="">
+                            Select Location
+                        </option>
+
+                        <option value="Chennai">
+                            Chennai
+                        </option>
+
+                        <option value="Coimbatore">
+                            Coimbatore
+                        </option>
+
+                        <option value="Madurai">
+                            Madurai
+                        </option>
+
+                        <option value="Trichy">
+                            Trichy
+                        </option>
+
+                        <option value="Salem">
+                            Salem
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Booking Summary -->
+
+                <div class="bg-blue-50
+                            rounded-xl
+                            p-5
+                            mt-6">
+
+
+                    <h3 class="font-bold
+                               text-lg
+                               mb-4">
+
+                        Booking Summary
+
+                    </h3>
+
+
+                    <div class="flex
+                                justify-between
+                                mb-2">
+
+                        <span>
+                            Car
+                        </span>
+
+                        <span id="summaryCar"
+                              class="font-semibold">
+
+                            Toyota Camry
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="flex
+                                justify-between
+                                mb-2">
+
+                        <span>
+                            Price / Day
+                        </span>
+
+                        <span id="summaryPrice">
+
+                            ₹2,500
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="flex
+                                justify-between
+                                mb-2">
+
+                        <span>
+                            Rental Days
+                        </span>
+
+                        <span id="totalDays">
+
+                            0
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="border-t
+                                border-blue-200
+                                mt-4 pt-4
+                                flex
+                                justify-between">
+
+                        <span class="text-lg
+                                     font-bold">
+
+                            Total Amount
+
+                        </span>
+
+                        <span id="totalAmount"
+                              class="text-2xl
+                                     font-bold
+                                     text-blue-600">
+
+                            ₹0
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Confirm Button -->
+
+                <button
+                    type="submit"
+                    class="w-full
+                           mt-6
+                           bg-blue-600
+                           hover:bg-blue-700
+                           text-white
+                           py-3
+                           rounded-lg
+                           font-semibold
+                           text-lg
+                           transition">
+
+                    Confirm Booking
+
+                </button>
+
+
+                <a href="cars.html"
+                   class="block
+                          text-center
+                          mt-4
+                          text-gray-500
+                          hover:text-blue-600">
+
+                    ← Back to Cars
+
+                </a>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= SUCCESS MESSAGE ================= -->
+
+<div id="successMessage"
+     class="hidden
+            fixed
+            inset-0
+            bg-black
+            bg-opacity-50
+            flex
+            items-center
+            justify-center
+            px-4">
+
+
+    <div class="bg-white
+                rounded-2xl
+                p-8
+                max-w-md
+                w-full
+                text-center
+                shadow-2xl">
+
+
+        <div class="text-6xl mb-4">
+            ✅
+        </div>
+
+
+        <h2 class="text-2xl
+                   font-bold
+                   text-green-600">
+
+            Booking Successful!
+
+        </h2>
+
+
+        <p class="text-gray-600
+                  mt-3">
+
+            Your car has been booked successfully.
+
+        </p>
+
+
+        <p id="successCar"
+           class="font-bold
+                  mt-3">
+
+        </p>
+
+
+        <button
+            onclick="goToCars()"
+            class="mt-6
+                   bg-blue-600
+                   hover:bg-blue-700
+                   text-white
+                   px-6 py-3
+                   rounded-lg
+                   font-semibold">
+
+            Back to Cars
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+
+/* ================= CAR DATA ================= */
+
+const cars = {
+
+    "Toyota Camry": {
+        price: 2500,
+        type: "Sedan",
+        image: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=800&q=80"
+    },
+
+    "Hyundai Creta": {
+        price: 2200,
+        type: "SUV",
+        image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=800&q=80"
+    },
+
+    "Maruti Swift": {
+        price: 1500,
+        type: "Hatchback",
+        image: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80"
+    },
+
+    "Toyota Fortuner": {
+        price: 4000,
+        type: "SUV",
+        image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80"
+    },
+
+    "BMW 3 Series": {
+        price: 5000,
+        type: "Luxury",
+        image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80"
+    },
+
+    "Honda City": {
+        price: 2000,
+        type: "Sedan",
+        image: "https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=800&q=80"
+    },
+
+    "Kia Seltos": {
+        price: 2300,
+        type: "SUV",
+        image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=800&q=80"
+    }
+    
+
+};
+
+
+
+/* ================= GET SELECTED CAR ================= */
+
+const urlParams =
+    new URLSearchParams(window.location.search);
+
+const selectedCar =
+    urlParams.get("car");
+
+const selectedPrice =
+    urlParams.get("price");
+
+
+/* ================= SET CAR DETAILS ================= */
+
+let carName = selectedCar || "Toyota Camry";
+
+let carInfo = cars[carName];
+
+
+if (!carInfo) {
+
+    carName = "Toyota Camry";
+
+    carInfo = cars["Toyota Camry"];
+
+}
+
+
+if (selectedPrice) {
+
+    carInfo = {
+        ...carInfo,
+        price: Number(selectedPrice)
+    };
+
+}
+
+
+
+/* ================= DISPLAY CAR ================= */
+
+document.getElementById("carName").innerText =
+    carName;
+
+document.getElementById("carType").innerText =
+    carInfo.type;
+
+document.getElementById("carPrice").innerText =
+    "₹" + carInfo.price.toLocaleString();
+
+document.getElementById("summaryCar").innerText =
+    carName;
+
+document.getElementById("summaryPrice").innerText =
+    "₹" + carInfo.price.toLocaleString();
+
+document.getElementById("carImage").src =
+    carInfo.image;
+
+
+
+/* ================= DATE CALCULATION ================= */
+
+const pickupDate =
+    document.getElementById("pickupDate");
+
+const returnDate =
+    document.getElementById("returnDate");
+
+const totalDays =
+    document.getElementById("totalDays");
+
+const totalAmount =
+    document.getElementById("totalAmount");
+
+
+
+function calculateTotal() {
+
+    if (
+        pickupDate.value &&
+        returnDate.value
+    ) {
+
+        const pickup =
+            new Date(pickupDate.value);
+
+        const returnDay =
+            new Date(returnDate.value);
+
+
+        const difference =
+            returnDay - pickup;
+
+
+        const days =
+            Math.ceil(
+                difference /
+                (1000 * 60 * 60 * 24)
+            );
+
+
+        if (days > 0) {
+
+            totalDays.innerText =
+                days;
+
+            const total =
+                days * carInfo.price;
+
+            totalAmount.innerText =
+                "₹" + total.toLocaleString();
+
+        } else {
+
+            totalDays.innerText =
+                "0";
+
+            totalAmount.innerText =
+                "₹0";
+
+        }
+
+    }
+
+}
+
+
+pickupDate.addEventListener(
+    "change",
+    calculateTotal
+);
+
+returnDate.addEventListener(
+    "change",
+    calculateTotal
+);
+
+
+
+/* ================= MIN DATE ================= */
+
+const today =
+    new Date().toISOString().split("T")[0];
+
+pickupDate.min = today;
+
+returnDate.min = today;
+
+
+
+pickupDate.addEventListener(
+    "change",
+    function() {
+
+        returnDate.min =
+            pickupDate.value;
+
+    }
+);
+
+
+
+/* ================= FORM SUBMIT ================= */
+
+document.getElementById("bookingForm")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            if (
+                !pickupDate.value ||
+                !returnDate.value
+            ) {
+
+                alert(
+                    "Please select pickup and return dates."
+                );
+
+                return;
+
+            }
+
+
+            const pickup =
+                new Date(pickupDate.value);
+
+            const returnDay =
+                new Date(returnDate.value);
+
+
+            if (returnDay <= pickup) {
+
+                alert(
+                    "Return date must be after pickup date."
+                );
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "successCar"
+            ).innerText =
+                carName +
+                " - Booking Confirmed";
+
+
+            document.getElementById(
+                "successMessage"
+            ).classList.remove("hidden");
+
+        }
+    );
+
+
+
+/* ================= BACK TO CARS ================= */
+
+function goToCars() {
+
+    window.location.href =
+        "cars.html";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
