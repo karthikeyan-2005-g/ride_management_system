@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Login - RentalCars</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen
+             bg-gradient-to-br
+             from-blue-600
+             to-blue-900
+             flex items-center
+             justify-center
+             px-6">
+
+
+    <!-- Login Card -->
+
+    <div class="w-full max-w-md
+                bg-white
+                rounded-2xl
+                shadow-2xl
+                p-8">
+
+
+        <!-- Logo -->
+
+        <div class="text-center mb-8">
+
+            <div class="text-5xl mb-3">
+                🚗
+            </div>
+
+            <h1 class="text-3xl
+                       font-bold">
+
+                Welcome Back
+
+            </h1>
+
+            <p class="text-gray-500 mt-2">
+
+                Login to your RentalCars account
+
+            </p>
+
+        </div>
+
+
+        <!-- Login Form -->
+
+        <form id="loginForm">
+
+
+            <!-- Email -->
+
+            <div class="mb-5">
+
+                <label class="block
+                              font-semibold
+                              mb-2">
+
+                    Email Address
+
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                    class="w-full
+                           border
+                           border-gray-300
+                           rounded-lg
+                           px-4 py-3
+                           focus:outline-none
+                           focus:ring-2
+                           focus:ring-blue-500">
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div class="mb-5">
+
+                <div class="flex
+                            justify-between
+                            mb-2">
+
+                    <label class="font-semibold">
+
+                        Password
+
+                    </label>
+
+                    <a href="#"
+                       class="text-blue-600
+                              text-sm
+                              hover:underline">
+
+                        Forgot Password?
+
+                    </a>
+
+                </div>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                    class="w-full
+                           border
+                           border-gray-300
+                           rounded-lg
+                           px-4 py-3
+                           focus:outline-none
+                           focus:ring-2
+                           focus:ring-blue-500">
+
+            </div>
+
+
+            <!-- Remember -->
+
+            <div class="flex
+                        items-center
+                        mb-6">
+
+                <input
+                    type="checkbox"
+                    class="w-4 h-4">
+
+                <label class="ml-2
+                              text-gray-600">
+
+                    Remember me
+
+                </label>
+
+            </div>
+
+
+            <!-- Login Button -->
+
+            <button
+                type="submit"
+                class="w-full
+                       bg-blue-600
+                       hover:bg-blue-700
+                       text-white
+                       py-3
+                       rounded-lg
+                       font-bold
+                       transition">
+
+                Login
+
+            </button>
+
+        </form>
+
+
+        <!-- Register -->
+
+        <p class="text-center
+                  text-gray-600
+                  mt-6">
+
+            Don't have an account?
+
+            <a href="./resiter.html"
+               class="text-blue-600
+                      font-semibold
+                      hover:underline">
+
+                Create Account
+
+            </a>
+
+        </p>
+
+
+        <!-- Back Home -->
+
+        <div class="text-center mt-5">
+
+            <a href="../index.html"
+               class="text-gray-500
+                      hover:text-blue-600">
+
+                ← Back to Home
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- JavaScript -->
+<script>
+
+document
+    .getElementById("loginForm")
+    .addEventListener(
+        "submit",
+        async function (event) {
+
+            // Stop normal form submission
+            event.preventDefault();
+
+
+            // ==========================================
+            // GET EMAIL
+            // ==========================================
+
+            const email =
+                document
+                    .getElementById("email")
+                    .value
+                    .trim();
+
+
+            // ==========================================
+            // GET PASSWORD
+            // ==========================================
+
+            const password =
+                document
+                    .getElementById("password")
+                    .value;
+
+
+            // ==========================================
+            // BASIC VALIDATION
+            // ==========================================
+
+            if (!email || !password) {
+
+                alert(
+                    "Please enter email and password."
+                );
+
+                return;
+            }
+
+
+            // ==========================================
+            // LOGIN API
+            // ==========================================
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://127.0.0.1:5000/api/login",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                email: email,
+
+                                password: password
+
+                            })
+                        }
+                    );
+
+
+                // ======================================
+                // GET BACKEND RESPONSE
+                // ======================================
+
+                const result =
+                    await response.json();
+
+
+                // ======================================
+                // LOGIN SUCCESS
+                // ======================================
+
+                if (response.ok) {
+
+                    /*
+                     * Save User ID
+                     *
+                     * This is important because
+                     * booking.html will use this ID
+                     * when creating a booking.
+                     */
+
+                    localStorage.setItem(
+                        "user_id",
+                        result.user.id
+                    );
+
+
+                    // Save email
+                    localStorage.setItem(
+                        "user_email",
+                        result.user.email
+                    );
+
+
+                    // Save user name
+                    if (result.user.name) {
+
+                        localStorage.setItem(
+                            "user_name",
+                            result.user.name
+                        );
+
+                    }
+
+
+                    alert(
+                        "Login successful!"
+                    );
+
+
+                    // Go to home page
+                    window.location.href =
+                        "/index.html";
+
+                }
+
+
+                // ======================================
+                // LOGIN FAILED
+                // ======================================
+
+                else {
+
+                    alert(
+                        result.message ||
+                        "Invalid email or password."
+                    );
+
+                }
+
+            }
+
+
+            // ==========================================
+            // SERVER / NETWORK ERROR
+            // ==========================================
+
+            catch (error) {
+
+                console.error(
+                    "Login Error:",
+                    error
+                );
+
+                alert(
+                    "Unable to connect to server. " +
+                    "Please make sure Flask server is running."
+                );
+
+            }
+
+        }
+    );
+
+</script>
+   
+</body>
+
+</html>

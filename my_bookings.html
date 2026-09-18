@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - RentalCars</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+            <a href="../index.html"
+               class="text-2xl font-bold text-blue-600">
+                🚗 CarRental
+            </a>
+
+            <div class="flex gap-6 items-center">
+
+                <a href="../index.html"
+                   class="text-gray-700 hover:text-blue-600">
+                    Home
+                </a>
+
+                <a href="./cars.html"
+                   class="text-gray-700 hover:text-blue-600">
+                    Cars
+                </a>
+
+                <a href="./my_bookings.html"
+                   class="text-blue-600 font-semibold">
+                    My Bookings
+                </a>
+
+                <a href="./login.html"
+                   class="text-gray-700 hover:text-blue-600">
+                    Login
+                </a>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Page Header -->
+    <section class="bg-blue-600 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <h1 class="text-4xl font-bold">
+                My Bookings
+            </h1>
+
+            <p class="mt-2 text-blue-100">
+                View your car rental bookings
+            </p>
+
+        </div>
+    </section>
+
+
+    <!-- Bookings -->
+    <main class="max-w-7xl mx-auto px-6 py-10">
+
+        <!-- No Bookings -->
+        <div id="noBookings"
+             class="bg-white rounded-xl shadow-md p-10 text-center">
+
+            <div class="text-6xl mb-4">
+                🚗
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800">
+                No Bookings Found
+            </h2>
+
+            <p class="text-gray-500 mt-2">
+                You haven't booked any cars yet.
+            </p>
+
+            <a href="./cars.html"
+               class="inline-block mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                Browse Cars
+            </a>
+
+        </div>
+
+
+        <!-- Booking Container -->
+        <div id="bookingContainer"
+             class="space-y-6 hidden">
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-6 mt-10">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+
+            <p>
+                © 2026 RentalCars. All rights reserved.
+            </p>
+
+        </div>
+    </footer>
+<script>
+
+const API_URL = "http://127.0.0.1:5000";
+
+const userId = localStorage.getItem("user_id");
+
+const bookingContainer =
+    document.getElementById("bookingContainer");
+
+const noBookings =
+    document.getElementById("noBookings");
+
+
+async function loadBookings() {
+
+    if (!userId) {
+
+        noBookings.classList.remove("hidden");
+        bookingContainer.classList.add("hidden");
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            API_URL + "/api/bookings/user/" + userId
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error("Failed to load bookings");
+
+        }
+
+
+        const bookings = await response.json();
+
+
+        if (bookings.length === 0) {
+
+            noBookings.classList.remove("hidden");
+            bookingContainer.classList.add("hidden");
+
+            return;
+        }
+
+
+        noBookings.classList.add("hidden");
+        bookingContainer.classList.remove("hidden");
+
+
+        bookingContainer.innerHTML = "";
+
+
+        bookings.forEach(function(booking) {
+
+            const bookingCard =
+                document.createElement("div");
+
+
+            bookingCard.className =
+                "bg-white rounded-xl shadow-md p-6";
+
+
+            bookingCard.innerHTML = `
+
+                <div class="flex flex-col md:flex-row
+                            justify-between gap-6">
+
+                    <div>
+
+                        <h2 class="text-2xl font-bold text-gray-800">
+                            ${booking.car_name}
+                        </h2>
+
+                        <p class="text-gray-500 mt-1">
+                            Booking ID: #${booking.id}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <span class="bg-green-100 text-green-700
+                                     px-4 py-2 rounded-full
+                                     text-sm font-semibold">
+
+                            ${booking.status}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="grid grid-cols-1 md:grid-cols-2
+                            lg:grid-cols-4 gap-6 mt-6">
+
+
+                    <div>
+
+                        <p class="text-gray-500 text-sm">
+                            Pickup Date
+                        </p>
+
+                        <p class="font-semibold text-gray-800">
+                            ${booking.pickup_date}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-gray-500 text-sm">
+                            Return Date
+                        </p>
+
+                        <p class="font-semibold text-gray-800">
+                            ${booking.return_date}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-gray-500 text-sm">
+                            Pickup Location
+                        </p>
+
+                        <p class="font-semibold text-gray-800">
+                            ${booking.pickup_location || "Not available"}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-gray-500 text-sm">
+                            Total Amount
+                        </p>
+
+                        <p class="font-bold text-blue-600 text-lg">
+                            ₹${Number(booking.total_price || 0).toLocaleString()}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="border-t mt-6 pt-4">
+
+                    <p class="text-gray-500 text-sm">
+                        Customer
+                    </p>
+
+                    <p class="font-semibold">
+                        ${booking.customer_name || "Customer"}
+                    </p>
+
+                </div>
+
+            `;
+
+
+            bookingContainer.appendChild(bookingCard);
+
+        });
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        noBookings.classList.remove("hidden");
+
+        bookingContainer.classList.add("hidden");
+
+    }
+
+}
+
+
+loadBookings();
+
+</script>
+
+   
+</body>
+</html>
