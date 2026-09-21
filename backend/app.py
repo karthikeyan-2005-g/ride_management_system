@@ -590,58 +590,40 @@ def get_user_bookings(user_id):
 # CANCEL BOOKING
 # ==========================================
 
-@app.route(
-    "/api/bookings/<int:booking_id>",
-    methods=["DELETE"]
-)
+@app.route("/api/bookings/<int:booking_id>", methods=["DELETE"])
 def cancel_booking(booking_id):
 
     conn = get_db_connection()
 
-
-    booking = conn.execute("""
-        SELECT *
-        FROM bookings
-        WHERE id = ?
-    """, (booking_id,)).fetchone()
-
+    booking = conn.execute(
+        "SELECT car_id FROM bookings WHERE id = ?",
+        (booking_id,)
+    ).fetchone()
 
     if booking is None:
-
         conn.close()
-
         return jsonify({
             "message": "Booking not found"
         }), 404
 
+    # Make the car available again
+    conn.execute(
+        "UPDATE cars SET available = 1 WHERE id = ?",
+        (booking["car_id"],)
+    )
 
-    # Cancel booking
-
-    conn.execute("""
-        UPDATE bookings
-        SET status = 'Cancelled'
-        WHERE id = ?
-    """, (booking_id,))
-
-
-    # Make car available again
-
-    conn.execute("""
-        UPDATE cars
-        SET available = 1
-        WHERE id = ?
-    """, (booking["car_id"],))
-
+    # Delete the booking
+    conn.execute(
+        "DELETE FROM bookings WHERE id = ?",
+        (booking_id,)
+    )
 
     conn.commit()
-
     conn.close()
-
 
     return jsonify({
         "message": "Booking cancelled successfully"
-    })
-
+    }), 200
 
 
 # ==========================================

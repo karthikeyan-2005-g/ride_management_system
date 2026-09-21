@@ -277,6 +277,19 @@ async function loadBookings() {
 
                 </div>
 
+
+            <!-- Cancel Booking Button -->
+               <div class="mt-5">
+
+          <button onclick="cancelBooking(${booking.id})"
+           class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 font-semibold">
+
+        Cancel Booking
+
+    </button>
+
+</div>
+
             `;
 
 
@@ -297,7 +310,48 @@ async function loadBookings() {
 
 }
 
+async function cancelBooking(bookingId) {
 
+    const confirmCancel = confirm(
+        "Are you sure you want to cancel this booking?"
+    );
+
+    if (!confirmCancel) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            API_URL + "/api/bookings/" + bookingId,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const result = await response.json();
+
+        if (response.ok) {
+
+            alert("Booking cancelled successfully!");
+
+            // Refresh booking list
+            loadBookings();
+
+        } else {
+
+            alert(result.message || "Failed to cancel booking.");
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Unable to connect to backend.");
+
+    }
+}
 loadBookings();
 
 </script>
