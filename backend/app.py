@@ -554,7 +554,6 @@ def create_booking():
 # ==========================================
 # GET USER BOOKINGS
 # ==========================================
-
 @app.route("/api/bookings/user/<int:user_id>", methods=["GET"])
 def get_user_bookings(user_id):
 
@@ -567,13 +566,16 @@ def get_user_bookings(user_id):
             bookings.car_id,
             cars.name AS car_name,
             cars.image,
+            bookings.customer_name,
+            bookings.email,
+            bookings.phone,
+            bookings.pickup_location,
             bookings.pickup_date,
             bookings.return_date,
             bookings.total_price,
             bookings.status
         FROM bookings
-        JOIN cars
-            ON bookings.car_id = cars.id
+        JOIN cars ON bookings.car_id = cars.id
         WHERE bookings.user_id = ?
         ORDER BY bookings.id DESC
     """, (user_id,)).fetchall()
@@ -581,11 +583,8 @@ def get_user_bookings(user_id):
     conn.close()
 
     return jsonify([
-        dict(booking)
-        for booking in bookings
+        dict(booking) for booking in bookings
     ])
-
-
 # ==========================================
 # CANCEL BOOKING
 # ==========================================
