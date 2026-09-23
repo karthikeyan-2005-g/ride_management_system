@@ -116,7 +116,6 @@ def add_car():
                 "message": f"{field} is required"
             }), 400
 
-
     conn = get_db_connection()
 
     cursor = conn.cursor()
@@ -153,7 +152,6 @@ def add_car():
 
     conn.close()
 
-
     return jsonify({
         "message": "Car added successfully",
         "car_id": car_id
@@ -175,7 +173,6 @@ def update_car(car_id):
             "message": "No data received"
         }), 400
 
-
     conn = get_db_connection()
 
     car = conn.execute("""
@@ -191,7 +188,6 @@ def update_car(car_id):
         return jsonify({
             "message": "Car not found"
         }), 404
-
 
     conn.execute("""
         UPDATE cars
@@ -223,7 +219,6 @@ def update_car(car_id):
 
     conn.close()
 
-
     return jsonify({
         "message": "Car updated successfully"
     })
@@ -252,7 +247,6 @@ def delete_car(car_id):
             "message": "Car not found"
         }), 404
 
-
     conn.execute("""
         DELETE FROM cars
         WHERE id = ?
@@ -262,11 +256,9 @@ def delete_car(car_id):
 
     conn.close()
 
-
     return jsonify({
         "message": "Car deleted successfully"
     })
-
 
 
 # ==========================================
@@ -279,6 +271,7 @@ def register():
     data = request.get_json()
 
     if not data:
+
         return jsonify({
             "message": "No data received"
         }), 400
@@ -288,30 +281,35 @@ def register():
     password = data.get("password")
 
     if not name or not email or not password:
+
         return jsonify({
             "message": "Name, email and password are required"
         }), 400
 
     conn = get_db_connection()
 
-    # Check existing email
     existing_user = conn.execute(
         "SELECT id FROM users WHERE email = ?",
         (email,)
     ).fetchone()
 
     if existing_user:
+
         conn.close()
 
         return jsonify({
             "message": "Email already registered"
         }), 409
 
-    # Save new user
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO users (name, email, password)
+        INSERT INTO users
+        (
+            name,
+            email,
+            password
+        )
         VALUES (?, ?, ?)
     """, (
         name,
@@ -335,7 +333,6 @@ def register():
     }), 201
 
 
-
 # ==========================================
 # USER LOGIN
 # ==========================================
@@ -346,6 +343,7 @@ def login():
     data = request.get_json()
 
     if not data:
+
         return jsonify({
             "message": "No login data received"
         }), 400
@@ -354,6 +352,7 @@ def login():
     password = data.get("password")
 
     if not email or not password:
+
         return jsonify({
             "message": "Email and password are required"
         }), 400
@@ -364,11 +363,15 @@ def login():
         SELECT id, name, email
         FROM users
         WHERE email = ? AND password = ?
-    """, (email, password)).fetchone()
+    """, (
+        email,
+        password
+    )).fetchone()
 
     conn.close()
 
     if user is None:
+
         return jsonify({
             "message": "Invalid email or password"
         }), 401
@@ -381,6 +384,8 @@ def login():
             "email": user["email"]
         }
     }), 200
+
+
 # ==========================================
 # CREATE BOOKING
 # ==========================================
@@ -391,6 +396,7 @@ def create_booking():
     data = request.get_json()
 
     if not data:
+
         return jsonify({
             "message": "No booking data received"
         }), 400
@@ -435,6 +441,17 @@ def create_booking():
 
 
     # ==========================================
+    # VALIDATE DATE ORDER
+    # ==========================================
+
+    if pickup_date >= return_date:
+
+        return jsonify({
+            "message": "Return date must be after pickup date"
+        }), 400
+
+
+    # ==========================================
     # DATABASE CONNECTION
     # ==========================================
 
@@ -450,7 +467,6 @@ def create_booking():
         (user_id,)
     ).fetchone()
 
-
     if user is None:
 
         conn.close()
@@ -465,10 +481,9 @@ def create_booking():
     # ==========================================
 
     car = conn.execute(
-        "SELECT id, available FROM cars WHERE id = ?",
+        "SELECT id FROM cars WHERE id = ?",
         (car_id,)
     ).fetchone()
-
 
     if car is None:
 
@@ -480,15 +495,29 @@ def create_booking():
 
 
     # ==========================================
-    # CHECK CAR AVAILABILITY
+    # CHECK DATE OVERLAP
     # ==========================================
 
-    if car["available"] == 0:
+    existing_booking = conn.execute("""
+        SELECT id
+        FROM bookings
+        WHERE car_id = ?
+          AND status = 'Confirmed'
+          AND pickup_date < ?
+          AND return_date > ?
+    """, (
+        car_id,
+        return_date,
+        pickup_date
+    )).fetchone()
+
+
+    if existing_booking:
 
         conn.close()
 
         return jsonify({
-            "message": "Car is not available"
+            "message": "Car is already booked for these dates"
         }), 400
 
 
@@ -497,7 +526,6 @@ def create_booking():
     # ==========================================
 
     cursor = conn.cursor()
-
 
     cursor.execute("""
         INSERT INTO bookings
@@ -530,15 +558,11 @@ def create_booking():
 
     booking_id = cursor.lastrowid
 
-     # Mark car as unavailable after booking
-    cursor.execute(
-    "UPDATE cars SET available = 0 WHERE id = ?",
-    (car_id,)
-)
 
     # ==========================================
     # SAVE DATABASE
-    # =========================================
+    # ==========================================
+
     conn.commit()
 
     conn.close()
@@ -549,15 +573,15 @@ def create_booking():
     # ==========================================
 
     return jsonify({
-
         "message": "Booking created successfully",
-
         "booking_id": booking_id
-
     }), 201
+
+
 # ==========================================
 # GET USER BOOKINGS
 # ==========================================
+
 @app.route("/api/bookings/user/<int:user_id>", methods=["GET"])
 def get_user_bookings(user_id):
 
@@ -579,7 +603,8 @@ def get_user_bookings(user_id):
             bookings.total_price,
             bookings.status
         FROM bookings
-        JOIN cars ON bookings.car_id = cars.id
+        JOIN cars
+            ON bookings.car_id = cars.id
         WHERE bookings.user_id = ?
         ORDER BY bookings.id DESC
     """, (user_id,)).fetchall()
@@ -587,8 +612,11 @@ def get_user_bookings(user_id):
     conn.close()
 
     return jsonify([
-        dict(booking) for booking in bookings
+        dict(booking)
+        for booking in bookings
     ])
+
+
 # ==========================================
 # CANCEL BOOKING
 # ==========================================
@@ -598,31 +626,36 @@ def cancel_booking(booking_id):
 
     conn = get_db_connection()
 
-    booking = conn.execute(
-        "SELECT car_id FROM bookings WHERE id = ?",
-        (booking_id,)
-    ).fetchone()
+    booking = conn.execute("""
+        SELECT id
+        FROM bookings
+        WHERE id = ?
+    """, (booking_id,)).fetchone()
+
 
     if booking is None:
+
         conn.close()
+
         return jsonify({
             "message": "Booking not found"
         }), 404
 
-    # Make the car available again
-    conn.execute(
-        "UPDATE cars SET available = 1 WHERE id = ?",
-        (booking["car_id"],)
-    )
 
-    # Delete the booking
-    conn.execute(
-        "DELETE FROM bookings WHERE id = ?",
-        (booking_id,)
-    )
+    # ==========================================
+    # DELETE BOOKING
+    # ==========================================
+
+    conn.execute("""
+        DELETE FROM bookings
+        WHERE id = ?
+    """, (booking_id,))
+
 
     conn.commit()
+
     conn.close()
+
 
     return jsonify({
         "message": "Booking cancelled successfully"
