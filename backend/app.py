@@ -530,11 +530,15 @@ def create_booking():
 
     booking_id = cursor.lastrowid
 
+     # Mark car as unavailable after booking
+    cursor.execute(
+    "UPDATE cars SET available = 0 WHERE id = ?",
+    (car_id,)
+)
 
     # ==========================================
     # SAVE DATABASE
-    # ==========================================
-
+    # =========================================
     conn.commit()
 
     conn.close()
