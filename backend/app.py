@@ -360,7 +360,10 @@ def login():
     conn = get_db_connection()
 
     user = conn.execute("""
-        SELECT id, name, email
+        SELECT
+            id,
+            name,
+            email
         FROM users
         WHERE email = ? AND password = ?
     """, (
@@ -481,7 +484,11 @@ def create_booking():
     # ==========================================
 
     car = conn.execute(
-        "SELECT id FROM cars WHERE id = ?",
+        """
+        SELECT id
+        FROM cars
+        WHERE id = ?
+        """,
         (car_id,)
     ).fetchone()
 
@@ -497,6 +504,27 @@ def create_booking():
     # ==========================================
     # CHECK DATE OVERLAP
     # ==========================================
+    #
+    # Example:
+    #
+    # Existing:
+    # 24-09-2026 -> 25-09-2026
+    #
+    # New:
+    # 26-09-2026 -> 27-09-2026
+    #
+    # Result: AVAILABLE
+    #
+    #
+    # Existing:
+    # 24-09-2026 -> 25-09-2026
+    #
+    # New:
+    # 24-09-2026 -> 26-09-2026
+    #
+    # Result: NOT AVAILABLE
+    #
+    # ==========================================
 
     existing_booking = conn.execute("""
         SELECT id
@@ -511,6 +539,10 @@ def create_booking():
         pickup_date
     )).fetchone()
 
+
+    # ==========================================
+    # IF DATE OVERLAP EXISTS
+    # ==========================================
 
     if existing_booking:
 
@@ -607,7 +639,9 @@ def get_user_bookings(user_id):
             ON bookings.car_id = cars.id
         WHERE bookings.user_id = ?
         ORDER BY bookings.id DESC
-    """, (user_id,)).fetchall()
+    """, (
+        user_id,
+    )).fetchall()
 
     conn.close()
 
@@ -626,11 +660,14 @@ def cancel_booking(booking_id):
 
     conn = get_db_connection()
 
-    booking = conn.execute("""
-        SELECT id
+    booking = conn.execute(
+        """
+        SELECT car_id
         FROM bookings
         WHERE id = ?
-    """, (booking_id,)).fetchone()
+        """,
+        (booking_id,)
+    ).fetchone()
 
 
     if booking is None:
@@ -646,10 +683,13 @@ def cancel_booking(booking_id):
     # DELETE BOOKING
     # ==========================================
 
-    conn.execute("""
+    conn.execute(
+        """
         DELETE FROM bookings
         WHERE id = ?
-    """, (booking_id,))
+        """,
+        (booking_id,)
+    )
 
 
     conn.commit()
