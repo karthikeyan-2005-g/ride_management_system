@@ -360,16 +360,10 @@ def login():
     conn = get_db_connection()
 
     user = conn.execute("""
-        SELECT
-            id,
-            name,
-            email
+        SELECT id, name, email
         FROM users
         WHERE email = ? AND password = ?
-    """, (
-        email,
-        password
-    )).fetchone()
+    """, (email, password)).fetchone()
 
     conn.close()
 
@@ -484,11 +478,7 @@ def create_booking():
     # ==========================================
 
     car = conn.execute(
-        """
-        SELECT id
-        FROM cars
-        WHERE id = ?
-        """,
+        "SELECT id FROM cars WHERE id = ?",
         (car_id,)
     ).fetchone()
 
@@ -513,16 +503,17 @@ def create_booking():
     # New:
     # 26-09-2026 -> 27-09-2026
     #
-    # Result: AVAILABLE
-    #
+    # Result:
+    # ALLOWED
     #
     # Existing:
     # 24-09-2026 -> 25-09-2026
     #
     # New:
-    # 24-09-2026 -> 26-09-2026
+    # 24-09-2026 -> 27-09-2026
     #
-    # Result: NOT AVAILABLE
+    # Result:
+    # NOT ALLOWED
     #
     # ==========================================
 
@@ -639,9 +630,7 @@ def get_user_bookings(user_id):
             ON bookings.car_id = cars.id
         WHERE bookings.user_id = ?
         ORDER BY bookings.id DESC
-    """, (
-        user_id,
-    )).fetchall()
+    """, (user_id,)).fetchall()
 
     conn.close()
 
@@ -661,14 +650,9 @@ def cancel_booking(booking_id):
     conn = get_db_connection()
 
     booking = conn.execute(
-        """
-        SELECT car_id
-        FROM bookings
-        WHERE id = ?
-        """,
+        "SELECT car_id FROM bookings WHERE id = ?",
         (booking_id,)
     ).fetchone()
-
 
     if booking is None:
 
@@ -684,18 +668,18 @@ def cancel_booking(booking_id):
     # ==========================================
 
     conn.execute(
-        """
-        DELETE FROM bookings
-        WHERE id = ?
-        """,
+        "DELETE FROM bookings WHERE id = ?",
         (booking_id,)
     )
 
 
+    # ==========================================
+    # SAVE DATABASE
+    # ==========================================
+
     conn.commit()
 
     conn.close()
-
 
     return jsonify({
         "message": "Booking cancelled successfully"
